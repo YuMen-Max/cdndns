@@ -2,7 +2,7 @@ name: Auto-Generate-and-Update-IP
 
 on:
   schedule:
-    - cron: '0 16 * * *' # 每天中国时间晚上 12:00 运行 (UTC 时间 16:00)
+    - cron: '0 16 * * 0' # 每周中国时间星期一凌晨 12:00 运行 (UTC 时间星期日 16:00)
   workflow_dispatch: # 手动触发
 
 jobs:
