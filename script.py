@@ -14,7 +14,7 @@ if not CLOUDFLARE_API_TOKEN or not CLOUDFLARE_ZONE_ID or not DOMAIN_NAME:
 # 生成随机 IP 的函数
 def generate_random_ips(base_ip="172.64.229"):
     ips = []
-    for _ in range(3):
+    for _ in range(2):  # 生成 2 个随机 IP
         random_tail = random.randint(0, 255)
         ips.append(f"{base_ip}.{random_tail}")
     return ips
