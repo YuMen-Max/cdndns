@@ -12,12 +12,12 @@ if not CLOUDFLARE_API_TOKEN or not CLOUDFLARE_ZONE_ID or not DOMAIN_NAME:
     raise ValueError("缺少必要的环境变量，请检查 GitHub Secrets 配置")
 
 # 生成随机 IP 的函数
-def generate_random_ips(base_ip="172.64.229"):
-    ips = []
-    for _ in range(2):  # 生成 2 个随机 IP
+def generate_random_ips(base_ip="172.64.229", count=150):
+    ip_set = set()
+    while len(ip_set) < count:
         random_tail = random.randint(0, 255)
-        ips.append(f"{base_ip}.{random_tail}")
-    return ips
+        ip_set.add(f"{base_ip}.{random_tail}")
+    return list(ip_set)
 
 # 获取域名的所有 DNS 记录
 def get_dns_records():
@@ -38,7 +38,7 @@ def delete_dns_records(records):
         "Content-Type": "application/json"
     }
     for record in records:
-        if "172.64.229." in record["content"]:  # 匹配 IP 前缀
+        if record["type"] == "A" and record["name"] == DOMAIN_NAME:
             delete_url = f"{url}/{record['id']}"
             response = requests.delete(delete_url, headers=headers)
             response.raise_for_status()
@@ -56,7 +56,7 @@ def add_a_records(ips):
             "type": "A",
             "name": DOMAIN_NAME,
             "content": ip,
-            "ttl": 86400,  # TTL 设置为 24 小时
+            "ttl": 1,  # TTL 设置为自动
             "proxied": False  # 关闭代理
         }
         response = requests.post(url, headers=headers, json=data)
@@ -72,7 +72,7 @@ def main():
     # 获取现有的 DNS 记录
     dns_records = get_dns_records()
 
-    # 删除匹配的 DNS 记录
+    # 删除现有的 A 记录
     delete_dns_records(dns_records)
 
     # 添加新的 A 记录
