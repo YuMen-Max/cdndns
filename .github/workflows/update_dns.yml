@@ -1,14 +1,11 @@
 name: Auto-Generate-and-Update-IP
 
 on:
-  schedule:
-    - cron: '* * * * *' # 每周中国时间星期一凌晨 12:00 运行 (UTC 时间星期日 16:00)
   workflow_dispatch: # 手动触发
-
 jobs:
   run-script:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 检出代码库
         uses: actions/checkout@v3
